@@ -4,7 +4,7 @@
 
 ## 현재 연결 정보
 
-- GitHub Pages 예정 주소: `https://oneulmanna.github.io/calbak/`
+- GitHub Pages 주소: `https://kithype.github.io/calbak/`
 - Supabase Project URL: `https://mtovsqqbxdgskxdspjym.supabase.co`
 - Supabase publishable key: `supabase-config.js`에 입력 완료
 - 카카오 로그인: Supabase Provider에서 활성화 완료
@@ -14,7 +14,7 @@
 
 1. ZIP 압축을 풉니다.
 2. 압축을 푼 폴더 안의 파일과 `assets` 폴더를 전부 선택합니다.
-3. GitHub의 `oneulmanna/calbak` 저장소에서 `uploading an existing file`을 누릅니다.
+3. GitHub의 `kithype/calbak` 저장소에서 `uploading an existing file`을 누릅니다.
 4. 선택한 파일을 업로드하고 `Commit changes`를 누릅니다.
 5. `Settings` → `Pages`
 6. Source: `Deploy from a branch`
@@ -29,11 +29,13 @@
 - `service_role`, `sb_secret`, 카카오 Client Secret은 GitHub에 올리면 안 됩니다.
 - 현재 들어 있는 `sb_publishable_` 키는 브라우저용 공개 키입니다.
 - 카카오 개발자 설정의 리다이렉트 URI는 Supabase 콜백 주소여야 합니다.
-- Supabase URL Configuration에는 GitHub Pages 주소와 `auth-callback.html` 주소가 등록되어 있어야 합니다.
+- Supabase `Authentication → URL Configuration`의 Site URL은 `https://kithype.github.io/calbak/`로 설정합니다.
+- Supabase Redirect URLs에는 `https://kithype.github.io/calbak/auth-callback.html`을 등록합니다.
+- 카카오 개발자 콘솔의 Redirect URI에는 `https://mtovsqqbxdgskxdspjym.supabase.co/auth/v1/callback`을 등록합니다.
 
 
 ## 카카오톡 공유 카드 적용
 
 - 카카오 JavaScript SDK 2.8.1 적용
 - 약속방의 `카카오톡 공유` 버튼을 누르면 이미지·제목·설명·참여 버튼이 포함된 피드 카드가 열립니다.
-- 웹 도메인 및 JavaScript SDK 도메인: `https://oneulmanna.github.io`
+- 웹 도메인 및 JavaScript SDK 도메인: `https://kithype.github.io`

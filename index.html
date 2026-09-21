@@ -15,6 +15,15 @@
     <section class="sheet home-sheet">
       <div class="sheet-inner">
         <div class="home-main">
+          <div class="install-card">
+            <img src="./assets/icon.svg" alt="">
+            <div class="install-copy">
+              <strong>홈 화면에 추가</strong>
+              <span>앱처럼 바로 열 수 있어요.</span>
+            </div>
+            <button class="install-button" id="install-button" type="button">방법</button>
+          </div>
+
           <div class="logo-card">
             <img src="./assets/icon.svg" alt="캘박 로고">
           </div>
@@ -39,16 +48,7 @@
           </div>
         </div>
 
-        <div class="home-bottom">
-          <button class="home-install-button" id="install-button" type="button">
-            <span class="home-install-icon" aria-hidden="true">
-              <img src="./assets/icon.svg" alt="">
-            </span>
-            <span>홈 화면에 추가</span>
-            <span class="home-install-plus" aria-hidden="true">+</span>
-          </button>
-          <footer class="footer">MADE BY <strong>KIM INHO</strong></footer>
-        </div>
+        <footer class="footer">MADE BY <strong>KIM INHO</strong></footer>
       </div>
     </section>
   </main>
@@ -123,6 +123,7 @@
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
       deferredPrompt = event;
+      installButton.textContent = "설치";
     });
 
     installButton.addEventListener("click", async () => {
@@ -130,6 +131,7 @@
         deferredPrompt.prompt();
         await deferredPrompt.userChoice;
         deferredPrompt = null;
+        installButton.textContent = "방법";
         return;
       }
 
