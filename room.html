@@ -8,6 +8,26 @@
   <link rel="icon" href="./assets/icon.svg">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./assets/style.css">
+  <style>
+    .weekdays span:first-child,
+    .weekdays span:last-child,
+    .day.weekend .day-number,
+    .day.holiday .day-number {
+      color: #ef627d;
+    }
+
+    .holiday-name {
+      display: block;
+      overflow: hidden;
+      margin-top: 3px;
+      color: #ef627d;
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
 </head>
 <body>
   <main class="page">
@@ -98,6 +118,102 @@
     let participants = [];
     let currentMonth = null;
 
+    const fixedKoreanHolidays = new Map([
+      ["01-01", "신정"],
+      ["03-01", "삼일절"],
+      ["05-05", "어린이날"],
+      ["06-06", "현충일"],
+      ["08-15", "광복절"],
+      ["10-03", "개천절"],
+      ["10-09", "한글날"],
+      ["12-25", "성탄절"]
+    ]);
+    const substituteEligible = new Set([
+      "삼일절", "어린이날", "부처님오신날", "광복절", "개천절", "한글날", "성탄절"
+    ]);
+    const holidayCache = new Map();
+    const lunarFormatter = new Intl.DateTimeFormat("ko-KR-u-ca-chinese", {
+      month: "numeric",
+      day: "numeric"
+    });
+
+    function lunarMonthDay(date) {
+      const parts = lunarFormatter.formatToParts(date);
+      return {
+        month: Number(parts.find((part) => part.type === "month")?.value),
+        day: Number(parts.find((part) => part.type === "day")?.value)
+      };
+    }
+
+    function baseKoreanHolidays(date) {
+      const names = [];
+      const iso = dateToISO(date);
+      const fixedName = fixedKoreanHolidays.get(iso.slice(5));
+      if (fixedName) names.push(fixedName);
+
+      const lunar = lunarMonthDay(date);
+      const tomorrow = new Date(date);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowLunar = lunarMonthDay(tomorrow);
+
+      if (tomorrowLunar.month === 1 && tomorrowLunar.day === 1) names.push("설날 연휴");
+      if (lunar.month === 1 && (lunar.day === 1 || lunar.day === 2)) names.push("설날 연휴");
+      if (lunar.month === 4 && lunar.day === 8) names.push("부처님오신날");
+      if (lunar.month === 8 && lunar.day >= 14 && lunar.day <= 16) names.push("추석 연휴");
+
+      return names;
+    }
+
+    function addSubstituteHoliday(holidays, startDate) {
+      const substitute = new Date(startDate);
+      do {
+        substitute.setDate(substitute.getDate() + 1);
+      } while (
+        substitute.getDay() === 0 ||
+        substitute.getDay() === 6 ||
+        holidays.has(dateToISO(substitute))
+      );
+      holidays.set(dateToISO(substitute), ["대체공휴일"]);
+    }
+
+    function koreanHolidaysForYear(year) {
+      if (holidayCache.has(year)) return holidayCache.get(year);
+
+      const holidays = new Map();
+      const yearEnd = new Date(year, 11, 31);
+      for (let date = new Date(year, 0, 1); date <= yearEnd; date.setDate(date.getDate() + 1)) {
+        const names = baseKoreanHolidays(date);
+        if (names.length) holidays.set(dateToISO(date), names);
+      }
+
+      [...holidays.entries()].forEach(([iso, names]) => {
+        const date = parseISO(iso);
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        const hasEligibleHoliday = names.some((name) => substituteEligible.has(name));
+        const hasHolidayOverlap = names.length > 1;
+        if ((isWeekend && hasEligibleHoliday) || (hasHolidayOverlap && hasEligibleHoliday)) {
+          addSubstituteHoliday(holidays, date);
+        }
+      });
+
+      ["설날 연휴", "추석 연휴"].forEach((holidayName) => {
+        const block = [...holidays.entries()]
+          .filter(([, names]) => names.includes(holidayName))
+          .map(([iso]) => parseISO(iso))
+          .sort((a, b) => a - b);
+        if (block.some((date) => date.getDay() === 0)) {
+          addSubstituteHoliday(holidays, block[block.length - 1]);
+        }
+      });
+
+      holidayCache.set(year, holidays);
+      return holidays;
+    }
+
+    function koreanHolidayName(date) {
+      return (koreanHolidaysForYear(date.getFullYear()).get(dateToISO(date)) || []).join(", ");
+    }
+
     function firstMonthDate(value) {
       const date = parseISO(value);
       return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -132,12 +248,17 @@
         const iso = dateToISO(date);
         const disabled = date < start || date > end;
         const people = dateParticipants(iso).slice(0, 4);
+        const weekend = date.getDay() === 0 || date.getDay() === 6;
+        const holiday = koreanHolidayName(date);
 
         cells.push(`
-          <button class="day${selectedDates.has(iso) ? " selected" : ""}" type="button"
+          <button class="day${selectedDates.has(iso) ? " selected" : ""}${weekend ? " weekend" : ""}${holiday ? " holiday" : ""}" type="button"
             data-date="${iso}" ${disabled ? "disabled" : ""}
-            aria-pressed="${selectedDates.has(iso)}">
+            aria-pressed="${selectedDates.has(iso)}"
+            aria-label="${day}일${holiday ? ` ${escapeHtml(holiday)}` : ""}"
+            ${holiday ? `title="${escapeHtml(holiday)}"` : ""}>
             <span class="day-number">${day}</span>
+            ${holiday ? `<span class="holiday-name">${escapeHtml(holiday)}</span>` : ""}
             <span class="day-people">
               ${people.map((person) => avatarMarkup(person, true)).join("")}
             </span>
