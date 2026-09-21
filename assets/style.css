@@ -563,14 +563,118 @@ h1, h2, h3, p { margin-top: 0; }
   .page { padding: 0; }
   .sheet { min-height: 100vh; border: 0; border-radius: 0; box-shadow: none; }
   .sheet-inner { padding: 24px 18px 22px; }
-  .home-sheet .sheet-inner { min-height: 100vh; padding: 60px 18px 28px; }
+  .home-sheet .sheet-inner {
+    min-height: 100vh;
+    padding: 24px 18px max(22px, env(safe-area-inset-bottom));
+  }
+  .home-sheet .install-card {
+    margin-bottom: 16px;
+    padding: 10px 12px;
+  }
+  .home-sheet .install-card img { width: 38px; height: 38px; }
+  .home-sheet .logo-card {
+    width: 112px;
+    height: 112px;
+    margin-bottom: 16px;
+    border-width: 10px;
+    border-radius: 30px;
+  }
+  .home-sheet .logo-card img { width: 78px; height: 78px; }
+  .home-sheet .home-title { margin-bottom: 6px; font-size: 38px; }
+  .home-sheet .subtitle { margin-top: 8px; font-size: 13px; }
+  .home-sheet .account-card {
+    margin-top: 18px;
+    border-radius: 20px;
+    padding: 11px;
+  }
+  .home-sheet .account-avatar { width: 44px; height: 44px; }
+  .home-sheet .home-actions { margin-top: 18px; }
+  .home-sheet .button { min-height: 52px; padding: 12px 18px; }
+  .home-sheet .button + .button { margin-top: 10px; }
+  .home-sheet .footer { padding-top: 18px; }
+
+  .room-sheet .sheet-inner { padding: 16px 14px 18px; }
+  .room-sheet .back-button,
+  .room-sheet .month-button { width: 40px; height: 40px; font-size: 19px; }
+  .room-sheet .page-badge { padding: 7px 12px; font-size: 10px; }
+  .room-sheet .title-block { margin-top: 10px; }
+  .room-sheet .eyebrow { display: none; }
+  .room-sheet .page-title { font-size: 32px; line-height: 1.05; }
+  .room-sheet .subtitle { margin-top: 6px; font-size: 13px; line-height: 1.4; }
+  .room-sheet .room-top-copy { margin-top: 10px; }
+  .room-sheet .form { margin-top: 14px; }
+  .room-sheet .account-card {
+    margin: 0 0 12px;
+    gap: 10px;
+    border-radius: 18px;
+    padding: 9px 10px;
+  }
+  .room-sheet .account-avatar { width: 38px; height: 38px; }
+  .room-sheet .account-copy strong { font-size: 12px; }
+  .room-sheet .account-copy span { margin-top: 1px; font-size: 10px; }
+  .room-sheet .calendar-wrap { margin-top: 0; }
+  .room-sheet .calendar-nav {
+    grid-template-columns: 40px 1fr 40px;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .room-sheet .calendar-title { font-size: 21px; }
+  .room-sheet .weekdays { margin-bottom: 5px; }
+  .room-sheet .calendar-grid,
+  .room-sheet .weekdays { gap: 4px; }
+  .room-sheet .weekdays span { font-size: 10px; }
+  .room-sheet .day {
+    min-height: 48px;
+    border-radius: 12px;
+    padding: 5px 5px 4px;
+  }
+  .room-sheet .day.selected { padding: 4px 4px 3px; }
+  .room-sheet .day-number { font-size: 11px; }
+  .room-sheet .holiday-name { margin-top: 1px; font-size: 7px; }
+  .room-sheet .person-avatar.small { width: 17px; height: 17px; font-size: 7px; }
+  .room-sheet .day-people { right: 4px; bottom: 4px; }
+  .room-sheet #participant-form > .info-card:first-of-type { display: none; }
+  .room-sheet #participant-form > .info-card {
+    margin-top: 10px;
+    border-radius: 16px;
+    padding: 10px 12px;
+  }
+  .room-sheet .info-card strong { margin-bottom: 3px; font-size: 12px; }
+  .room-sheet .info-card p { font-size: 11px; line-height: 1.4; }
+  .room-sheet .selected-list { gap: 5px; margin-top: 6px; }
+  .room-sheet .date-chip { padding: 5px 8px; font-size: 10px; }
+  .room-sheet .action-stack,
+  .room-sheet .share-stack {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .room-sheet .action-stack .button,
+  .room-sheet .share-stack .button {
+    min-height: 46px;
+    margin-top: 0;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .room-sheet .link-box { display: none; }
+  .room-sheet .footer { display: none; }
+
   .page-title { font-size: 38px; }
-  .home-title { font-size: 44px; }
   .preset-grid { grid-template-columns: repeat(2, 1fr); }
-  .day { min-height: 62px; border-radius: 15px; padding: 8px 6px 6px; }
-  .day.selected { padding: 7px 5px 5px; }
-  .day-number { font-size: 12px; }
-  .person-avatar.small { width: 20px; height: 20px; font-size: 8px; }
-  .calendar-grid, .weekdays { gap: 5px; }
-  .calendar-title { font-size: 24px; }
+  .sheet:not(.room-sheet) .day { min-height: 62px; border-radius: 15px; padding: 8px 6px 6px; }
+  .sheet:not(.room-sheet) .day.selected { padding: 7px 5px 5px; }
+  .sheet:not(.room-sheet) .day-number { font-size: 12px; }
+  .sheet:not(.room-sheet) .person-avatar.small { width: 20px; height: 20px; font-size: 8px; }
+  .sheet:not(.room-sheet) .calendar-grid,
+  .sheet:not(.room-sheet) .weekdays { gap: 5px; }
+  .sheet:not(.room-sheet) .calendar-title { font-size: 24px; }
+}
+
+@supports (min-height: 100dvh) {
+  @media (max-width: 620px) {
+    .page,
+    .sheet,
+    .home-sheet .sheet-inner { min-height: 100dvh; }
+  }
 }
