@@ -126,15 +126,6 @@ a { color: inherit; text-decoration: none; }
 
 .logo-card img { width: 104px; height: 104px; }
 
-.eyebrow {
-  margin: 0 0 8px;
-  color: #a9978e;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .24em;
-  text-transform: uppercase;
-}
-
 h1, h2, h3, p { margin-top: 0; }
 
 .home-title {
@@ -164,6 +155,9 @@ h1, h2, h3, p { margin-top: 0; }
   width: min(100%, 620px);
   margin: 30px auto 0;
 }
+
+.home-actions [hidden] { display: none; }
+.member-actions[hidden] { display: none; }
 
 .button {
   display: inline-flex;

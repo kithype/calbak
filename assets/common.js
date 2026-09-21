@@ -107,8 +107,18 @@
     return pageUrl(page, { code });
   }
 
+  function appBaseUrl() {
+    try {
+      const base = String(config.PUBLIC_BASE_URL || "").trim();
+      const url = new URL(base || "./", location.href);
+      return url.href.endsWith("/") ? url.href : `${url.href}/`;
+    } catch {
+      return new URL("./", location.href).href;
+    }
+  }
+
   function callbackUrl() {
-    return pageUrl("auth-callback.html");
+    return new URL("auth-callback.html", appBaseUrl()).href;
   }
 
   function safeReturnUrl(value) {
