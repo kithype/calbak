@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff8f1">
   <title>캘박 · 우리오늘만나?</title>
-  <meta name="description" content="카카오 친구들과 가능한 날짜를 골라 가장 잘 맞는 날을 찾아보세요.">
+  <meta name="description" content="우리 언제 만날지, 가능한 날짜를 골라보세요.">
   <link rel="icon" href="./assets/icon.svg">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./assets/style.css">
@@ -15,21 +15,11 @@
     <section class="sheet home-sheet">
       <div class="sheet-inner">
         <div class="home-main">
-          <div class="install-card">
-            <img src="./assets/icon.svg" alt="">
-            <div class="install-copy">
-              <strong>홈 화면에 추가</strong>
-              <span>앱처럼 바로 열 수 있어요.</span>
-            </div>
-            <button class="install-button" id="install-button" type="button">방법</button>
-          </div>
-
           <div class="logo-card">
             <img src="./assets/icon.svg" alt="캘박 로고">
           </div>
-          <p class="eyebrow">CUTE SCHEDULE APP</p>
           <h1 class="home-title">우리오늘만나?</h1>
-          <p class="subtitle">되는 날만 콕콕 찍고, 제일 잘 맞는 날을 귀엽게 찾아보세요.</p>
+          <p class="subtitle">우리 언제 만날지, 가능한 날짜를 골라보세요.</p>
 
           <div class="account-card" id="account-card" hidden>
             <div class="account-avatar" id="account-avatar">?</div>
@@ -42,8 +32,11 @@
 
           <div class="home-actions">
             <button class="button kakao" id="login-button" type="button">카카오로 시작하기</button>
-            <a class="button primary" id="create-link" href="./create.html">약속 만들기</a>
-            <a class="button" href="./rooms.html">기존 약속 보기</a>
+            <div class="member-actions" id="member-actions" hidden>
+              <a class="button primary" id="create-link" href="./create.html">약속 만들기</a>
+              <a class="button" href="./rooms.html">기존 약속 보기</a>
+            </div>
+            <button class="home-install-link" id="install-button" type="button">홈 화면에 추가</button>
           </div>
         </div>
 
@@ -66,16 +59,19 @@
         const user = await getUser();
         const loginButton = document.getElementById("login-button");
         const accountCard = document.getElementById("account-card");
+        const memberActions = document.getElementById("member-actions");
 
         if (!user) {
           loginButton.hidden = false;
           accountCard.hidden = true;
+          memberActions.hidden = true;
           return;
         }
 
         const profile = getProfile(user);
         loginButton.hidden = true;
         accountCard.hidden = false;
+        memberActions.hidden = false;
         document.getElementById("account-name").textContent = profile.name;
         document.getElementById("account-avatar").innerHTML = profile.avatar
           ? `<img src="${escapeHtml(profile.avatar)}" alt="">`
@@ -119,7 +115,6 @@
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
       deferredPrompt = event;
-      installButton.textContent = "설치";
     });
 
     installButton.addEventListener("click", async () => {
@@ -127,7 +122,6 @@
         deferredPrompt.prompt();
         await deferredPrompt.userChoice;
         deferredPrompt = null;
-        installButton.textContent = "방법";
         return;
       }
 
